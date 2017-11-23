@@ -99,6 +99,10 @@ public class Movie {
         this.ratings = ratings;
     }
 
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
+
     public Set<Nomination> getNominations() {
         return nominations;
     }
