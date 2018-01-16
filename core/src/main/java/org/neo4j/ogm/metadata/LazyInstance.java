@@ -14,7 +14,6 @@
 package org.neo4j.ogm.metadata;
 
 import java.util.concurrent.atomic.AtomicMarkableReference;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -27,6 +26,7 @@ class LazyInstance<T> {
 
     public LazyInstance(Supplier<T> supplier) {
         this.supplier = supplier;
+        // mark value is used to indicate if the instance is initialized or not.
         this.ref = new AtomicMarkableReference<>(null, false);
     }
 
