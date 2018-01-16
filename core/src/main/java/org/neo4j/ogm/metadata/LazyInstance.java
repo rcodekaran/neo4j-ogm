@@ -13,6 +13,8 @@
 
 package org.neo4j.ogm.metadata;
 
+import java.util.concurrent.atomic.AtomicMarkableReference;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 /**
@@ -21,19 +23,18 @@ import java.util.function.Supplier;
 class LazyInstance<T> {
 
     private Supplier<T> supplier;
-    private T instance;
-    private boolean initialized = false;
+    private AtomicMarkableReference<T> ref;
 
     public LazyInstance(Supplier<T> supplier) {
         this.supplier = supplier;
+        this.ref = new AtomicMarkableReference<>(null, false);
     }
 
     public T get() {
-        if (instance == null && !initialized) {
-            instance = supplier.get();
-            initialized = true;
+        if(!this.ref.isMarked()) {
+            this.ref.compareAndSet(null, this.supplier.get(), false, true);
         }
-        return instance;
+        return this.ref.getReference();
     }
 
     public boolean exists() {
